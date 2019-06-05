@@ -1,0 +1,4 @@
+what is edQuota?
+Ans- this cmd is use for edit Quota user and group
+#edquota -u username
+$edquota -u arun
