@@ -1,0 +1,78 @@
+
+
+Edquota command is used to edit the quotas for a user or group. This is just an editor, from where you can change the quota values.
+
+By default, this will open up the quota file in an Vi editor, from where you can change the values. When you save the file, it will overwrite the original quota values for the user or group based on the one you’ve just entered.
+
+1) Edit User Quota
+You’ll typical edit quota for a given user.
+Use the edquota command as shown below. This will edit the quota for user john.
+The output of the edquota command will be loaded in a vi editor, from where you can change the value of soft limit, hard limit for both blocks and inodes for a given file system.
+
+# edquota -u john
+Disk quotas for user john (uid 501):
+  Filesystem                   blocks       soft       hard     inodes     soft     hard
+  /dev/sda1                     65316        100        100       4197        0        0
+
+
+2) Edit Group Quota
+To edit group quota, use -g. The following will allow you to edit the group quota for the group “nagios”.
+edquota -g nagios
+Disk quotas for group nagios (gid 504):
+  Filesystem                   blocks       soft       hard     inodes     soft     hard
+  /dev/sda1                  28109628          0          0     727443        0        0
+
+3) Specify Quota Format
+You can specify a particular quota format using -F option. The following are possible values:
+
+    vfsold Original quota format with 16-bit UIDs / GIDs
+    vfsv0 Quota format with 32-bit UIDs / GIDs, 64-bit space usage, 32-bit inode usage and limits
+    vfsv1 Quota format with 64-bit quota limits and usage
+    rpc (quota over NFS)
+    xfs (quota on XFS filesystem)
+The following will edit the given quota format filesystems.
+
+# edquota -F vfsv0 -u john
+
+If none of the filesystem matches the given quota format, you’ll get the following error message.
+# edquota -F vfsv1 -u john
+edquota: Quota file not found or has wrong format.
+No filesystems with quota detected.
+
+4) Specify Filesystem
+When you have lot of filesystem with quota enabled, you can specify the filesystem using -f option.
+
+The following will edit quota only for the root filesystem for john.
+
+# edquota -u john -f /
+
+If the given filesystem doesn’t exist, you’ll get the following error message.
+
+# edquota -u john -f /data
+edquota: Cannot stat() given mountpoint /data: No such file or directory
+Skipping...
+edquota: No correct mountpoint specified.
+edquota: Cannot initialize mountpoint scan.
+
+5. Edit Grace Period
+
+Use the -t option to edit the quota grace period as shown below. Please note that you can specify different grace period for different filesystem. By default the grace period for both blocks and inodes are 7 days.
+
+# edquota -t
+Grace period before enforcing soft limits for users:
+Time units may be: days, hours, minutes, or seconds
+  Filesystem             Block grace period     Inode grace period
+  /dev/sda1                     7days                  7days
+
+Note: In the above output, it shows “days”, you can also specify: seconds, minutes, hours and days
+6. Edit Time
+
+When a soft limit is enforced on a filesystem, you can specify the time limit using -T option.
+
+In the following example, it is currently not set for user Raj. But, you can specify any value here. For example: “7days” for both block grace and inode grace.
+
+# edquota -T raj
+Times to enforce softlimit for user raj (uid 502):
+Time units may be: days, hours, minutes, or seconds
+  Filesystem                         block grace               inode grace
+  /dev/sda1                                 unset                  unset
